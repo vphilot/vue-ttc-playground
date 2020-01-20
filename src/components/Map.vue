@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="map">
       <l-map
       :zoom="zoom"
       :center="center"
@@ -9,47 +9,55 @@
       >
       <l-tile-layer :url="url" :attribution="attribution" />
 
-      <l-feature-group ref="paths-buses">
+      <l-feature-group ref="buses">
         <l-polyline v-for="(item, index) in paths.buses" v-bind:key="`item=${index}`"
-        :lat-lngs="item"
-        :color="'#01ffea'"
+        :lat-lngs="item.path"
+        :color="item.color"
         :weight="1"
         :opacity="0.2">
+          <l-popup> {{ item.title }}</l-popup>
         </l-polyline>
       </l-feature-group>
-      <l-feature-group ref="paths-streetcars">
+      <l-feature-group ref="streetcars">
         <l-polyline v-for="(item, index) in paths.streetcars" v-bind:key="`item=${index}`"
+        :lat-lngs="item.path"
+        :color="item.color"
+        :weight="isSelected ? 1 : 20"
+        :opacity="0.7"
+        @click="handlePolylineClick">
+                  <l-popup> {{ item.title }}</l-popup>
+        </l-polyline>
+      </l-feature-group>
+      <l-feature-group ref="subways">
+        <l-polyline v-for="(item, index) in paths.subways" v-bind:key="`item=${index}`"
         :lat-lngs="item"
-        :color="'#ff0030'"
-        :weight="1">
+        :color="'#fff200'"
+        :weight="2">
         </l-polyline>
       </l-feature-group>
     </l-map>
-    
   </div>
 </template>
 
 <script>
 import { latLng } from "leaflet";
-import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LPolyline, LFeatureGroup } from "vue2-leaflet";
+import { LMap, LTileLayer, LPolyline, LFeatureGroup, LPopup } from "vue2-leaflet";
+import { log } from 'util';
 export default {
   name: "Map",
   props: {
-      color: String,
-      coords: Array,
-      paths: Object
+      paths: Object,
   },
   components: {
     LMap,
     LTileLayer,
-    LMarker,
-    LPopup,
-    LTooltip,
     LPolyline,
     LFeatureGroup,
+    LPopup
   },
   data() {
     return {
+      isSelected: true,
       zoom: 12,
       center: latLng(43.6999630, -79.3872070),
       url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
@@ -66,8 +74,9 @@ export default {
         // console.log(`#${c}`)
         return `#${c}`;
     },
-    logNumber(num) {
-      console.log(`${num} is ready`);
+    handlePolylineClick(event) {
+      console.log(event.target );
+      // this.isSelected ? this.isSelected = false : this.isSelected = true;
     }
   },
   mounted(){
@@ -79,4 +88,14 @@ export default {
 </script>
 
 <style>
+/* style overrides for leaflet */
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background: #424242;
+    color: #ffffff;
+}
+
+.leaflet-pane {
+  z-index: 0 !important;
+}
 </style>

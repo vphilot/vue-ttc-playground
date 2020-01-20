@@ -1,7 +1,11 @@
 import Vue from 'vue';
 import App from './App.vue';
+import { Loading } from 'buefy';
 import L from 'leaflet'
 import './assets/styles/leaflet.css'
+import 'buefy/dist/buefy.min.css'
+
+Vue.use(Loading);
 
 delete L.Icon.Default.prototype._getIconUrl
 
