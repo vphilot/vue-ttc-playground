@@ -1,5 +1,7 @@
 # vue-ttc-playground
 
+## this project is currently halted since NextBus is uncapable of handling SSL requests
+
 ## Project setup
 ```
 npm install
